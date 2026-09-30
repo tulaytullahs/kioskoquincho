@@ -1,0 +1,10 @@
+{
+  "name": "kiosco-del-club",
+  "private": true,
+  "scripts": {
+    "install:all": "npm.cmd --prefix server install && npm.cmd --prefix client install",
+    "dev": "concurrently \"npm.cmd --prefix server run dev\" \"npm.cmd --prefix client run dev\"",
+    "start": "npm.cmd --prefix server start"
+  },
+  "devDependencies": { "concurrently": "^9.1.2" }
+}
