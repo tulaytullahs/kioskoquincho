@@ -1,0 +1,6 @@
+import bcrypt from 'bcryptjs'; import {db,initDb} from './db.js'; initDb();
+const pass=await bcrypt.hash(process.env.ADMIN_PASSWORD||'admin123',10); db.prepare("INSERT OR IGNORE INTO users(name,email,password_hash,role) VALUES(?,?,?,'admin')").run('Administrador',process.env.ADMIN_EMAIL||'admin@kiosco.local',pass);
+const cats=['Bebidas','Golosinas','Snacks','Comida','Cafetería']; const addCat=db.prepare('INSERT OR IGNORE INTO categories(name,sort_order) VALUES(?,?)'); cats.forEach((x,i)=>addCat.run(x,i));
+const get=db.prepare('SELECT id FROM categories WHERE name=?'); const exists=db.prepare('SELECT id FROM products WHERE code=?'); const p=db.prepare('INSERT INTO products(name,description,category_id,price_cents,cost_cents,stock,min_stock,code) VALUES(?,?,?,?,?,?,?,?)');
+[['Coca Cola 500ml','Bien fría',2000,1100,24,10],['Agua 500ml','Sin gas',1500,600,30,10],['Alfajor','Chocolate',1200,500,16,8],['Papas fritas','Clásicas',1800,900,12,6],['Café','Café caliente',1000,250,50,10],['Sándwich de jamón y queso','Preparado al momento',3500,1500,8,3]].forEach(([n,d,pr,c,st,min],i)=>{const code=`SKU-${i+1}`;if(!exists.get(code))p.run(n,d,get.get(cats[i===5?3:i])?.id,pr,c,st,min,code)});
+console.log('Base inicializada. Admin: admin@kiosco.local / admin123');
